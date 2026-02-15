@@ -10,7 +10,10 @@ export default [
 	route("login", "routes/login.tsx"),
 	route("setup", "routes/setup.tsx"),
 	layout("routes/_app.tsx", [
-		route("planner", "routes/_app.planner.tsx"),
+		route("planner", "routes/_app.planner.tsx", [
+			index("routes/_app.planner._index.tsx"),
+			route(":weekId", "routes/_app.planner.$weekId.tsx"),
+		]),
 		route("recipes", "routes/_app.recipes.tsx", [
 			index("routes/_app.recipes._index.tsx"),
 			route("new", "routes/_app.recipes.new.tsx"),
