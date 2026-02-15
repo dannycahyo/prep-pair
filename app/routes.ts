@@ -11,7 +11,11 @@ export default [
 	route("setup", "routes/setup.tsx"),
 	layout("routes/_app.tsx", [
 		route("planner", "routes/_app.planner.tsx"),
-		route("recipes", "routes/_app.recipes.tsx"),
+		route("recipes", "routes/_app.recipes.tsx", [
+			index("routes/_app.recipes._index.tsx"),
+			route("new", "routes/_app.recipes.new.tsx"),
+			route(":recipeId", "routes/_app.recipes.$recipeId.tsx"),
+		]),
 		route("grocery", "routes/_app.grocery.tsx"),
 		route("budget", "routes/_app.budget.tsx"),
 		route("settings", "routes/_app.settings.tsx"),
