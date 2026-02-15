@@ -6,9 +6,9 @@
 | -------------------- | ------------------------------------- |
 | **Product Name**     | PrepPair                              |
 | **Document Type**    | Technical Requirements Document (TRD) |
-| **Version**          | 1.1                                   |
+| **Version**          | 1.2                                   |
 | **Author**           | Danny (Software Engineer)             |
-| **Date**             | February 14, 2026                     |
+| **Date**             | February 15, 2026                     |
 | **Status**           | Draft                                 |
 | **Related Document** | [PRD.md](./PRD.md)                    |
 
@@ -22,23 +22,21 @@
 4. [Database Design](#4-database-design)
 5. [Frontend Architecture](#5-frontend-architecture)
 6. [Backend Architecture](#6-backend-architecture)
-7. [AI/LLM Integration](#7-aillm-integration)
-8. [Authentication](#8-authentication)
-9. [PWA Configuration](#9-pwa-configuration)
-10. [API Design](#10-api-design)
-11. [Environment & Configuration](#11-environment--configuration)
-12. [DevOps & Deployment](#12-devops--deployment)
-13. [Testing Strategy](#13-testing-strategy)
-14. [Performance & Security](#14-performance--security)
-15. [Future-Proofing & Scalability](#15-future-proofing--scalability)
+7. [Authentication](#7-authentication)
+8. [PWA Configuration](#8-pwa-configuration)
+9. [Environment & Configuration](#9-environment--configuration)
+10. [DevOps & Deployment](#10-devops--deployment)
+11. [Testing Strategy](#11-testing-strategy)
+12. [Performance & Security](#12-performance--security)
+13. [Future-Proofing & Scalability](#13-future-proofing--scalability)
 
 ---
 
 ## 1. Architecture Overview
 
-PrepPair is a **full-stack monolith** built on React Router v7 in **framework mode**. The entire application — UI, server-side logic (loaders/actions), and API routes — lives in a single deployable unit.
+PrepPair is a **full-stack monolith** built on React Router v7 in **framework mode**. The entire application — UI, server-side logic (loaders/actions), and data access — lives in a single deployable unit.
 
-The v1 design prioritizes **simplicity**: single-user, PIN-protected, no real-time sync, no multi-tenant isolation. However, the codebase is structured with clear separation of concerns (service layer, schema, validators) so that multi-user support, collaboration, and advanced features can be added without a rewrite.
+The v1 design prioritizes **simplicity**: single-user, PIN-protected, no AI, no real-time sync. The codebase is structured with clear separation of concerns (service layer, schema, validators) so that AI integration, multi-user support, and advanced features can be added later without a rewrite.
 
 ### 1.1 High-Level Architecture
 
@@ -50,36 +48,34 @@ The v1 design prioritizes **simplicity**: single-user, PIN-protected, no real-ti
                       │ HTTP
 ┌─────────────────────▼──────────────────────────┐
 │         React Router v7 (Framework Mode)        │
-│  ┌───────────┐  ┌──────────┐  ┌──────────────┐ │
-│  │  Loaders  │  │ Actions  │  │Resource Routes│ │
-│  └─────┬─────┘  └────┬─────┘  └──────┬───────┘ │
-│        └──────────────┼───────────────┘         │
-│  ┌────────────────────▼────────────────────┐    │
-│  │          Service Layer (TypeScript)      │    │
-│  │  Drizzle ORM · LangChain · Cheerio      │    │
-│  └──────────┬─────────────────┬────────────┘    │
-└─────────────┼─────────────────┼─────────────────┘
-              │                 │
-     ┌────────▼──────┐   ┌─────▼──────────────┐
-     │ PostgreSQL 16  │   │  LLM Providers     │
-     │                │   │  Ollama (local)     │
-     │                │   │  OpenAI / Anthropic │
-     └────────────────┘   └────────────────────┘
+│  ┌───────────┐  ┌──────────┐                    │
+│  │  Loaders  │  │ Actions  │                    │
+│  └─────┬─────┘  └────┬─────┘                    │
+│        └──────────────┘                         │
+│  ┌─────────────────────────────────────────┐    │
+│  │       Service Layer (TypeScript)         │    │
+│  │       Drizzle ORM · Zod                  │    │
+│  └──────────────┬──────────────────────────┘    │
+└─────────────────┼───────────────────────────────┘
+                  │
+         ┌────────▼──────┐
+         │ PostgreSQL 16  │
+         └────────────────┘
 ```
 
 ### 1.2 Key Architectural Decisions
 
-| Decision        | Choice                                    | Rationale                                                              |
-| --------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
-| Architecture    | Monolith (React Router v7 framework mode) | Single deployable; loaders/actions as backend                          |
-| Data model      | Single-user with `userId` FK              | Simple now; add `householdId` later for multi-user                     |
-| ORM             | Drizzle ORM                               | Type-safe, SQL-first, lightweight; consistent with FinIslam            |
-| Styling         | Tailwind CSS v4 + shadcn/ui               | Utility-first CSS with accessible components                           |
-| AI              | LangChain.js (chains only, no LangGraph)  | Chain composition and output parsing; no state machine overhead for v1 |
-| Auth            | PIN (bcrypt hashed)                       | Minimal friction for personal use; upgrade to Auth.js for multi-user   |
-| State           | React Router loaderData + React useState  | No external state library needed for v1 complexity                     |
-| Validation      | Zod                                       | Shared client/server schema validation                                 |
-| Package Manager | pnpm                                      | Fast, disk-efficient                                                   |
+| Decision        | Choice                                    | Rationale                                                            |
+| --------------- | ----------------------------------------- | -------------------------------------------------------------------- |
+| Architecture    | Monolith (React Router v7 framework mode) | Single deployable; loaders/actions as backend                        |
+| Data model      | Single-user with `userId` FK              | Simple now; add `householdId` later for multi-user                   |
+| ORM             | Drizzle ORM                               | Type-safe, SQL-first, lightweight; consistent with FinIslam          |
+| Styling         | Tailwind CSS v4 + shadcn/ui               | Utility-first CSS with accessible components                         |
+| Auth            | PIN (bcrypt hashed)                       | Minimal friction for personal use; upgrade to Auth.js for multi-user |
+| State           | React Router loaderData + React useState  | No external state library needed for v1 complexity                   |
+| Validation      | Zod                                       | Shared client/server schema validation                               |
+| AI              | Deferred to v2                            | Ship core app first; add LangChain + LLM integration later           |
+| Package Manager | pnpm                                      | Fast, disk-efficient                                                 |
 
 ---
 
@@ -110,17 +106,12 @@ The v1 design prioritizes **simplicity**: single-user, PIN-protected, no real-ti
 
 ### 2.3 Backend Stack
 
-| Technology               | Version | Purpose                                                 |
-| ------------------------ | ------- | ------------------------------------------------------- |
-| **Drizzle ORM**          | Latest  | PostgreSQL queries and migrations                       |
-| **drizzle-kit**          | Latest  | Migration generation                                    |
-| **LangChain.js**         | 0.3.x   | LLM chain composition, prompt templates, output parsers |
-| **@langchain/openai**    | Latest  | OpenAI integration                                      |
-| **@langchain/anthropic** | Latest  | Anthropic integration                                   |
-| **@langchain/ollama**    | Latest  | Local Ollama integration                                |
-| **Cheerio**              | 1.x     | HTML parsing for recipe URL import                      |
-| **bcryptjs**             | 2.x     | PIN hashing                                             |
-| **Zod**                  | 3.x     | Server-side input validation                            |
+| Technology      | Version | Purpose                           |
+| --------------- | ------- | --------------------------------- |
+| **Drizzle ORM** | Latest  | PostgreSQL queries and migrations |
+| **drizzle-kit** | Latest  | Migration generation              |
+| **bcryptjs**    | 2.x     | PIN hashing                       |
+| **Zod**         | 3.x     | Server-side input validation      |
 
 ### 2.4 Development & Tooling
 
@@ -131,7 +122,7 @@ The v1 design prioritizes **simplicity**: single-user, PIN-protected, no real-ti
 | **Biome**          | Linting and formatting                  |
 | **Vitest**         | Unit and integration testing            |
 | **Playwright**     | E2E testing                             |
-| **Docker Compose** | Local PostgreSQL + Ollama               |
+| **Docker Compose** | Local PostgreSQL                        |
 | **GitHub Actions** | CI/CD pipeline                          |
 
 ---
@@ -151,28 +142,22 @@ preppair/
 │   │   ├── _app.recipes.tsx            # Recipe list layout
 │   │   ├── _app.recipes._index.tsx     # Recipe collection
 │   │   ├── _app.recipes.new.tsx        # Add recipe (manual)
-│   │   ├── _app.recipes.import.tsx     # Import recipe from URL
 │   │   ├── _app.recipes.$recipeId.tsx  # Recipe detail / edit
 │   │   ├── _app.grocery.$weekId.tsx    # Grocery checklist for a week
 │   │   ├── _app.budget.tsx             # Budget overview & trends
 │   │   ├── _app.budget.log.tsx         # Log an expense
-│   │   ├── _app.settings.tsx           # Settings (PIN, budget, servings)
-│   │   └── api/
-│   │       ├── api.ai.suggest.ts       # AI meal suggestion endpoint
-│   │       └── api.ai.parse-url.ts     # AI recipe URL parsing endpoint
+│   │   └── _app.settings.tsx           # Settings (PIN, budget, servings)
 │   │
 │   ├── components/
 │   │   ├── ui/                         # shadcn/ui components
 │   │   ├── planner/
 │   │   │   ├── week-calendar.tsx       # 7-day grid
 │   │   │   ├── meal-slot.tsx           # Droppable meal slot
-│   │   │   ├── recipe-card-draggable.tsx
-│   │   │   └── quick-fill-button.tsx
+│   │   │   └── recipe-card-draggable.tsx
 │   │   ├── recipes/
 │   │   │   ├── recipe-form.tsx         # Manual entry form
 │   │   │   ├── recipe-card.tsx         # Preview card
 │   │   │   ├── ingredient-input.tsx    # Dynamic ingredient list
-│   │   │   ├── url-import-dialog.tsx   # URL import modal
 │   │   │   └── serving-scaler.tsx
 │   │   ├── budget/
 │   │   │   ├── budget-progress.tsx     # Progress bar
@@ -191,18 +176,12 @@ preppair/
 │   │   │   ├── index.ts               # Drizzle client
 │   │   │   ├── schema.ts              # All table definitions
 │   │   │   └── seed.ts                # Optional dev seed data
-│   │   ├── ai/
-│   │   │   ├── provider.ts            # LLM factory (Ollama/OpenAI/Anthropic)
-│   │   │   ├── meal-suggestion.ts     # Meal suggestion chain
-│   │   │   ├── recipe-parser.ts       # URL → structured recipe chain
-│   │   │   └── prompts.ts             # All prompt templates
 │   │   ├── services/
 │   │   │   ├── auth.service.ts        # PIN verification
 │   │   │   ├── recipe.service.ts      # Recipe CRUD
 │   │   │   ├── planner.service.ts     # Meal plan & slot management
 │   │   │   ├── grocery.service.ts     # Grocery list generation
-│   │   │   ├── budget.service.ts      # Budget tracking
-│   │   │   └── scraper.service.ts     # Cheerio URL scraping
+│   │   │   └── budget.service.ts      # Budget tracking
 │   │   ├── validators/
 │   │   │   ├── recipe.schema.ts       # Zod schemas
 │   │   │   ├── planner.schema.ts
@@ -252,7 +231,7 @@ preppair/
 │    users      │
 │              │
 │ id (PK)      │──────────────────────────────────────┐
-│ pin           │                                      │
+│ pinHash       │                                      │
 │ weeklyBudget  │     ┌───────────────────┐            │
 │ defaultServ.  │     │     recipes       │            │
 │ createdAt     │     │                   │            │
@@ -315,14 +294,13 @@ preppair/
 
 ### 4.2 Design Decisions
 
-| Decision                                  | Rationale                                                                                                                                                                |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`steps` as JSONB on `recipes`**         | Steps are always fetched with the recipe, never queried independently. Eliminates a join.                                                                                |
-| **`category` as free text (not enum)**    | On `recipe_ingredients` and `grocery_items`, a flexible text field avoids rigid enums. AI can suggest categories; users can type their own.                              |
-| **No `meal_ratings` table**               | `isFavorite` boolean + `meal_slots.status` (cooked/skipped) provides sufficient preference signal for AI. Ratings can be added in v2.                                    |
-| **No `households` / `household_members`** | Single user model. All tables use `userId` FK. To go multi-user: add a `householdId` column and a `households` table; migrate `userId` scoping to `householdId` scoping. |
-| **No `templateName` on meal_plans**       | Week templates are a v2 feature. Can be added as a nullable column later.                                                                                                |
-| **`weekStartDate` as unique per user**    | One plan per week. Enforced by unique index on `(userId, weekStartDate)`.                                                                                                |
+| Decision                                  | Rationale                                                                                                      |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **`steps` as JSONB on `recipes`**         | Steps are always fetched with the recipe, never queried independently. Eliminates a join.                      |
+| **`category` as free text (not enum)**    | Flexible text field avoids rigid enums. Users can type their own categories.                                   |
+| **No `households` / `household_members`** | Single user model. All tables use `userId` FK. To go multi-user: add `householdId` column and migrate scoping. |
+| **`weekStartDate` as unique per user**    | One plan per week. Enforced by unique index on `(userId, weekStartDate)`.                                      |
+| **`sourceUrl` on recipes**                | Preserved for when AI URL import is added in v2. Users can still manually note the source.                     |
 
 ### 4.3 Drizzle Schema Definition
 
@@ -432,7 +410,7 @@ export const recipeIngredients = pgTable('recipe_ingredients', {
   name: varchar('name', { length: 255 }).notNull(),
   quantity: decimal('quantity', { precision: 10, scale: 3 }),
   unit: varchar('unit', { length: 50 }),
-  category: varchar('category', { length: 100 }), // free text: "produce", "protein", etc.
+  category: varchar('category', { length: 100 }),
   sortOrder: integer('sort_order').notNull().default(0),
 });
 
@@ -473,7 +451,7 @@ export const mealSlots = pgTable(
     recipeId: text('recipe_id').references(() => recipes.id, {
       onDelete: 'set null',
     }),
-    dayOfWeek: integer('day_of_week').notNull(), // 0 = Monday, 6 = Sunday
+    dayOfWeek: integer('day_of_week').notNull(),
     mealType: mealTypeEnum('meal_type').notNull(),
     status: mealSlotStatusEnum('status').notNull().default('planned'),
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -726,7 +704,6 @@ export function WeekCalendar({ plan }: { plan: MealPlanWithSlots }) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    // Submit slot move via React Router action
     fetcher.submit(
       {
         intent: "move-slot",
@@ -760,15 +737,13 @@ export function WeekCalendar({ plan }: { plan: MealPlanWithSlots }) {
 }
 ```
 
-Note: No Zustand — drag-and-drop mutations go directly through React Router's `useFetcher`, which handles optimistic UI and revalidation natively.
-
 ### 5.4 Type-Safe Route Example
 
 ```typescript
 // app/routes/_app.planner.$weekId.tsx
 import type { Route } from "./+types/_app.planner.$weekId";
 import { db } from "~/lib/db";
-import { mealPlans, mealSlots } from "~/lib/db/schema";
+import { mealPlans } from "~/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "~/lib/services/auth.service";
 
@@ -798,13 +773,10 @@ export async function action({ request }: Route.ActionArgs) {
 
   switch (intent) {
     case "move-slot":
-      // Handle slot move
       break;
     case "assign-recipe":
-      // Handle recipe assignment
       break;
     case "mark-status":
-      // Mark cooked/skipped
       break;
   }
 
@@ -831,7 +803,7 @@ export default function PlannerWeek({ loaderData }: Route.ComponentProps) {
 
 ### 6.1 Service Layer
 
-All business logic lives in the service layer. Services are **plain functions** that accept parameters and return data. This keeps loaders/actions thin and makes business logic testable in isolation.
+All business logic lives in the service layer. Services are **plain functions** that accept parameters and return data.
 
 ```typescript
 // app/lib/services/recipe.service.ts
@@ -918,7 +890,6 @@ export async function generateGroceryList(mealPlanId: string) {
     with: { recipe: { with: { ingredients: true } } },
   });
 
-  // Aggregate ingredients by normalized name + unit
   const aggregated = new Map<
     string,
     {
@@ -947,7 +918,6 @@ export async function generateGroceryList(mealPlanId: string) {
     }
   }
 
-  // Replace existing list
   await db
     .delete(groceryItems)
     .where(eq(groceryItems.mealPlanId, mealPlanId));
@@ -1014,194 +984,9 @@ export const createBudgetEntrySchema = z.object({
 
 ---
 
-## 7. AI/LLM Integration
+## 7. Authentication
 
-### 7.1 Provider Factory
-
-```typescript
-// app/lib/ai/provider.ts
-import { ChatOllama } from '@langchain/ollama';
-import { ChatOpenAI } from '@langchain/openai';
-import { ChatAnthropic } from '@langchain/anthropic';
-import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
-
-type Provider = 'ollama' | 'openai' | 'anthropic';
-
-export function createChatModel(options?: {
-  provider?: Provider;
-  temperature?: number;
-}): BaseChatModel {
-  const provider =
-    options?.provider ??
-    (process.env.LLM_PROVIDER as Provider) ??
-    'ollama';
-  const temperature = options?.temperature ?? 0.7;
-
-  switch (provider) {
-    case 'ollama':
-      return new ChatOllama({
-        model: process.env.OLLAMA_MODEL ?? 'llama3.1:8b',
-        baseUrl:
-          process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434',
-        temperature,
-      });
-    case 'openai':
-      return new ChatOpenAI({
-        model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
-        apiKey: process.env.OPENAI_API_KEY,
-        temperature,
-      });
-    case 'anthropic':
-      return new ChatAnthropic({
-        model:
-          process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-20250514',
-        apiKey: process.env.ANTHROPIC_API_KEY,
-        temperature,
-      });
-  }
-}
-```
-
-### 7.2 Meal Suggestion Chain
-
-```typescript
-// app/lib/ai/meal-suggestion.ts
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { StructuredOutputParser } from '@langchain/core/output_parsers';
-import { z } from 'zod';
-import { createChatModel } from './provider';
-
-const suggestionSchema = z.array(
-  z.object({
-    title: z.string(),
-    description: z.string(),
-    category: z.string(),
-    estimatedCost: z.number(),
-    cookingStyle: z.enum(['fresh', 'batch_prep']),
-    reasoning: z.string(),
-  }),
-);
-
-const parser = StructuredOutputParser.fromZodSchema(suggestionSchema);
-
-const prompt = ChatPromptTemplate.fromMessages([
-  [
-    'system',
-    `You are a meal planning assistant for a couple in Indonesia.
-Suggest varied, budget-friendly, practical meals.
-
-Recent meals (avoid these): {recentMeals}
-Remaining budget: Rp {remainingBudget}
-Favorite cuisines: {favoriteCuisines}
-Servings: 2
-
-{formatInstructions}`,
-  ],
-  ['human', 'Suggest {count} {mealType} ideas.'],
-]);
-
-export async function suggestMeals(input: {
-  mealType: string;
-  count: number;
-  recentMeals: string[];
-  remainingBudget: number;
-  favoriteCuisines: string[];
-}) {
-  const model = createChatModel({ temperature: 0.8 });
-  const chain = prompt.pipe(model).pipe(parser);
-
-  return chain.invoke({
-    mealType: input.mealType,
-    count: input.count,
-    recentMeals: input.recentMeals.join(', ') || 'None yet',
-    remainingBudget: input.remainingBudget.toLocaleString('id-ID'),
-    favoriteCuisines: input.favoriteCuisines.join(', ') || 'Any',
-    formatInstructions: parser.getFormatInstructions(),
-  });
-}
-```
-
-### 7.3 Recipe URL Parser
-
-```typescript
-// app/lib/ai/recipe-parser.ts
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import { StructuredOutputParser } from '@langchain/core/output_parsers';
-import { z } from 'zod';
-import * as cheerio from 'cheerio';
-import { createChatModel } from './provider';
-
-const recipeSchema = z.object({
-  title: z.string(),
-  description: z.string().optional(),
-  prepTime: z.number().optional(),
-  cookTime: z.number().optional(),
-  servings: z.number().default(2),
-  category: z.string().optional(),
-  ingredients: z.array(
-    z.object({
-      name: z.string(),
-      quantity: z.number().optional(),
-      unit: z.string().optional(),
-    }),
-  ),
-  steps: z.array(
-    z.object({
-      instruction: z.string(),
-      timerSeconds: z.number().optional(),
-    }),
-  ),
-});
-
-const parser = StructuredOutputParser.fromZodSchema(recipeSchema);
-
-const prompt = ChatPromptTemplate.fromMessages([
-  [
-    'system',
-    `Extract structured recipe data from the provided web page.
-If info is missing, make reasonable estimates. Use metric units.
-{formatInstructions}`,
-  ],
-  ['human', 'Extract recipe:\n\n{content}'],
-]);
-
-export async function parseRecipeFromUrl(url: string) {
-  // Scrape with Cheerio
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'PrepPair/1.0' },
-    signal: AbortSignal.timeout(10_000),
-  });
-  const html = await res.text();
-  const $ = cheerio.load(html);
-  $('script, style, nav, footer, header').remove();
-
-  const content = $(
-    "article, .recipe, [itemtype*='Recipe'], main, body",
-  )
-    .first()
-    .text()
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 6000);
-
-  // Parse with LLM
-  const model = createChatModel({ temperature: 0.2 });
-  const chain = prompt.pipe(model).pipe(parser);
-
-  return chain.invoke({
-    content,
-    formatInstructions: parser.getFormatInstructions(),
-  });
-}
-```
-
----
-
-## 8. Authentication
-
-### 8.1 PIN-Based Auth
-
-Simple and fast — no OAuth libraries, no session management complexity.
+### 7.1 PIN-Based Auth
 
 ```typescript
 // app/lib/services/auth.service.ts
@@ -1237,7 +1022,6 @@ export async function requireAuth(request: Request): Promise<string> {
 
   if (!userId) throw redirect('/login');
 
-  // Verify user exists
   const user = await db.query.users.findFirst({
     where: eq(users.id, userId),
   });
@@ -1252,60 +1036,37 @@ function parseCookie(header: string, name: string): string | null {
 }
 ```
 
-### 8.2 Login Route
+### 7.2 Login Route
 
 ```typescript
 // app/routes/login.tsx
-import type { Route } from "./+types/login";
-import { verifyPin } from "~/lib/services/auth.service";
+import type { Route } from './+types/login';
+import { verifyPin } from '~/lib/services/auth.service';
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
-  const pin = formData.get("pin") as string;
+  const pin = formData.get('pin') as string;
 
   const userId = await verifyPin(pin);
-  if (!userId) return { error: "Invalid PIN" };
+  if (!userId) return { error: 'Invalid PIN' };
 
   return new Response(null, {
     status: 302,
     headers: {
-      Location: "/planner",
-      "Set-Cookie": `preppair_session=${userId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`,
+      Location: '/planner',
+      'Set-Cookie': `preppair_session=${userId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`,
     },
   });
 }
-
-export default function Login({ actionData }: Route.ComponentProps) {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <form method="post" className="space-y-4 w-64">
-        <h1 className="text-2xl font-bold text-center">PrepPair</h1>
-        <input
-          type="password"
-          name="pin"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          maxLength={6}
-          placeholder="Enter PIN"
-          className="w-full text-center text-2xl tracking-widest"
-        />
-        {actionData?.error && (
-          <p className="text-sm text-destructive text-center">{actionData.error}</p>
-        )}
-        <button type="submit" className="w-full">Unlock</button>
-      </form>
-    </div>
-  );
-}
 ```
 
-**Future migration path:** When going multi-user, replace PIN auth with Auth.js v5 (Google OAuth + email/password). The `requireAuth` function signature stays the same — it still returns a `userId` string — so all downstream code remains untouched.
+**Future migration path:** When going multi-user, replace PIN with Auth.js v5 (Google OAuth + email/password). `requireAuth()` still returns a `userId` string — all downstream code remains untouched.
 
 ---
 
-## 9. PWA Configuration
+## 8. PWA Configuration
 
-### 9.1 Manifest
+### 8.1 Manifest
 
 ```json
 {
@@ -1332,47 +1093,24 @@ export default function Login({ actionData }: Route.ComponentProps) {
 }
 ```
 
-### 9.2 Caching Strategy
+### 8.2 Caching Strategy
 
 | Resource                  | Strategy               | Rationale                        |
 | ------------------------- | ---------------------- | -------------------------------- |
 | App shell (HTML, CSS, JS) | Cache-First            | Fast loads; update in background |
 | Recipes & Meal Plans      | Stale-While-Revalidate | Show cached data immediately     |
 | Grocery List              | Network-First          | Checklist needs latest state     |
-| AI Suggestions            | Network-Only           | Always fresh                     |
 | Recipe Images             | Cache-First (30-day)   | Images rarely change             |
 
 ---
 
-## 10. API Design
-
-Resource routes (server-only, no UI) handle API-style requests for AI features:
-
-| Route              | Method | Description                   |
-| ------------------ | ------ | ----------------------------- |
-| `api/ai/suggest`   | POST   | Generate AI meal suggestions  |
-| `api/ai/parse-url` | POST   | Parse recipe from URL via LLM |
-
-All other data operations (recipe CRUD, plan management, budget logging, grocery check-off) use standard React Router **loaders** (GET) and **actions** (POST) on their respective route files — no separate API layer needed.
-
----
-
-## 11. Environment & Configuration
+## 9. Environment & Configuration
 
 ```bash
 # .env.example
 
 # Database
 DATABASE_URL=postgresql://postgres:password@localhost:5432/preppair
-
-# LLM
-LLM_PROVIDER=ollama                    # ollama | openai | anthropic
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1:8b
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini
-ANTHROPIC_API_KEY=sk-ant-...
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
 
 # App
 NODE_ENV=development
@@ -1394,23 +1132,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - '11434:11434'
-    volumes:
-      - ollama_data:/root/.ollama
-
 volumes:
   pgdata:
-  ollama_data:
 ```
 
 ---
 
-## 12. DevOps & Deployment
+## 10. DevOps & Deployment
 
-### 12.1 Targets
+### 10.1 Targets
 
 | Environment     | Platform                  | Database                    |
 | --------------- | ------------------------- | --------------------------- |
@@ -1418,7 +1148,7 @@ volumes:
 | **Staging**     | Vercel Preview            | Neon PostgreSQL (free tier) |
 | **Production**  | Vercel / Cloudflare       | Neon or Supabase PostgreSQL |
 
-### 12.2 CI Pipeline (GitHub Actions)
+### 10.2 CI Pipeline (GitHub Actions)
 
 ```yaml
 name: CI
@@ -1451,7 +1181,7 @@ jobs:
       - run: pnpm build
 ```
 
-### 12.3 Database Migrations
+### 10.3 Database Migrations
 
 ```bash
 pnpm drizzle-kit generate    # Generate migration from schema changes
@@ -1462,116 +1192,101 @@ pnpm drizzle-kit studio      # Visual DB inspector
 
 ---
 
-## 13. Testing Strategy
+## 11. Testing Strategy
 
-| Layer           | Tool             | Scope                                                    |
-| --------------- | ---------------- | -------------------------------------------------------- |
-| **Unit**        | Vitest           | Services, validators, utility functions                  |
-| **Integration** | Vitest + test DB | Service layer with real PostgreSQL                       |
-| **E2E**         | Playwright       | Full user flows (add recipe → plan week → generate list) |
-
-### Example: Service Test
-
-```typescript
-// tests/integration/grocery.service.test.ts
-import { describe, it, expect, beforeEach } from 'vitest';
-import { db } from '~/lib/db';
-import { generateGroceryList } from '~/lib/services/grocery.service';
-import { sql } from 'drizzle-orm';
-
-describe('generateGroceryList', () => {
-  beforeEach(async () => {
-    await db.execute(
-      sql`TRUNCATE users, recipes, meal_plans, meal_slots, grocery_items CASCADE`,
-    );
-    // ... seed test data
-  });
-
-  it('should aggregate duplicate ingredients across meals', async () => {
-    // ... create 2 recipes both using garlic
-    // ... create a meal plan with both recipes
-
-    const items = await generateGroceryList(planId);
-    const garlic = items.find(
-      (i) => i.name.toLowerCase() === 'garlic',
-    );
-
-    expect(garlic).toBeDefined();
-    expect(garlic!.quantity).toBe(6); // 3 + 3 cloves
-  });
-});
-```
+| Layer           | Tool             | Scope                                   |
+| --------------- | ---------------- | --------------------------------------- |
+| **Unit**        | Vitest           | Services, validators, utility functions |
+| **Integration** | Vitest + test DB | Service layer with real PostgreSQL      |
+| **E2E**         | Playwright       | Full user flows                         |
 
 ---
 
-## 14. Performance & Security
+## 12. Performance & Security
 
-### 14.1 Performance
+### 12.1 Performance
 
 | Area                | Strategy                                                          |
 | ------------------- | ----------------------------------------------------------------- |
 | **Route Splitting** | React Router auto-splits by route; lazy-load Recharts and dnd-kit |
 | **DB Connections**  | Pool via postgres.js (max 10)                                     |
-| **AI Caching**      | Cache suggestion responses in DB with 24h TTL                     |
 | **Images**          | Compress on upload; serve via CDN                                 |
-| **SSR**             | Server-render planner and recipe pages for fast first paint       |
+| **SSR**             | Server-render critical pages for fast first paint                 |
 | **Bundle**          | Tree-shake shadcn/ui; monitor with vite-bundle-visualizer         |
 
-### 14.2 Security
+### 12.2 Security
 
-| Concern                  | Mitigation                                                                  |
-| ------------------------ | --------------------------------------------------------------------------- |
-| **SQL Injection**        | Drizzle uses parameterized queries by default                               |
-| **XSS**                  | React auto-escapes JSX; sanitize any user HTML                              |
-| **PIN Security**         | bcrypt hashed; HttpOnly session cookie; 30-day expiry                       |
-| **Input Validation**     | Zod on all action inputs server-side                                        |
-| **LLM Prompt Injection** | Sanitize user inputs before prompt injection; use structured output parsers |
-| **URL Scraping**         | 10s timeout; strip script tags; rate limit imports                          |
-| **Secrets**              | Environment variables; never commit `.env`                                  |
+| Concern              | Mitigation                                            |
+| -------------------- | ----------------------------------------------------- |
+| **SQL Injection**    | Drizzle uses parameterized queries by default         |
+| **XSS**              | React auto-escapes JSX; sanitize any user HTML        |
+| **PIN Security**     | bcrypt hashed; HttpOnly session cookie; 30-day expiry |
+| **Input Validation** | Zod on all action inputs server-side                  |
+| **Secrets**          | Environment variables; never commit `.env`            |
 
 ---
 
-## 15. Future-Proofing & Scalability
+## 13. Future-Proofing & Scalability
 
-The v1 architecture is intentionally simple but designed with clear extension points:
+The v1 architecture is intentionally simple but designed with clear extension points.
 
-### 15.1 Multi-User Migration Path
+### 13.1 AI Integration Path (v2)
+
+When ready to add AI features, the extension is isolated:
+
+```
+Add to project:
+  app/lib/ai/
+  ├── provider.ts            # LLM factory (Ollama/OpenAI/Anthropic)
+  ├── meal-suggestion.ts     # LangChain suggestion chain
+  ├── recipe-parser.ts       # LangChain URL → recipe chain
+  └── prompts.ts             # Prompt templates
+
+  app/lib/services/
+  └── scraper.service.ts     # Cheerio URL scraping
+
+  app/routes/api/
+  ├── api.ai.suggest.ts      # Suggestion API route
+  └── api.ai.parse-url.ts    # URL parse API route
+
+  app/routes/
+  └── _app.recipes.import.tsx # URL import page
+
+Add to docker-compose.yml:
+  ollama service
+
+Add to .env:
+  LLM_PROVIDER, OLLAMA_*, OPENAI_*, ANTHROPIC_*
+
+Add to package.json:
+  langchain, @langchain/core, @langchain/openai,
+  @langchain/anthropic, @langchain/ollama, cheerio
+```
+
+No existing files need to change. The AI layer plugs in as new routes and services.
+
+### 13.2 Multi-User Migration Path
 
 ```
 v1 (current):  userId scopes all data
-v2 (future):   Add households table + householdId FK to recipes, meal_plans, budget_entries
-               Replace userId scoping with householdId scoping in services
-               requireAuth() still returns userId; add requireHousehold() middleware
+v2 (future):   Add households table + householdId FK
+               Replace userId scoping with householdId in services
+               requireAuth() still returns userId; add requireHousehold()
 ```
 
-The service layer abstraction means only service functions need updating — routes remain untouched.
+### 13.3 Features Deferred to v2+
 
-### 15.2 Features Deferred to v2+
-
-| Feature                   | What to Add                                                              | Complexity |
-| ------------------------- | ------------------------------------------------------------------------ | ---------- |
-| **Multi-user auth**       | Auth.js v5 with Google OAuth; `email`, `name` columns on users           | Medium     |
-| **Household workspaces**  | `households` + `household_members` tables; invite code flow              | Medium     |
-| **Real-time sync**        | SSE resource route; event emitter per plan                               | Medium     |
-| **Meal ratings**          | `meal_ratings` table (mealSlotId, rating 1-5, comment)                   | Low        |
-| **Recipe steps table**    | Migrate JSONB `steps` to dedicated table if querying steps independently | Low        |
-| **Week templates**        | `templateName` column on meal_plans; clone plan action                   | Low        |
-| **LangGraph workflows**   | Replace sequential suggestion function with stateful graph               | Medium     |
-| **Zustand state**         | Add if client-side state complexity grows beyond React state             | Low        |
-| **Nutritional dashboard** | AI-powered macro analysis; new `nutrition_data` JSONB on recipes         | Medium     |
-| **Batch cook planner**    | Analyze plan for batch-cookable items; prep schedule generator           | Medium     |
-| **Leftover manager**      | `leftovers` table with expiry tracking and recipe suggestions            | Medium     |
-| **Grocery delivery**      | Integration with Segari/TokopediaNOW APIs                                | High       |
-| **OCR receipts**          | Photo upload → OCR → structured expense entry                            | High       |
-
-### 15.3 Schema Extension Pattern
-
-When adding new features, follow this pattern to avoid breaking changes:
-
-1. **Add nullable columns** to existing tables (no migration breaks existing data)
-2. **Add new tables** with FK references to existing tables
-3. **Never rename or remove columns** in production — deprecate and add new ones
-4. **Use Drizzle migrations** for all schema changes (never raw SQL in production)
+| Feature                   | What to Add                                      | Complexity |
+| ------------------------- | ------------------------------------------------ | ---------- |
+| **AI meal suggestions**   | LangChain chain + API route + Quick Fill UI      | Medium     |
+| **AI recipe URL import**  | Cheerio scraper + LangChain parser + import page | Medium     |
+| **Multi-user auth**       | Auth.js v5 with Google OAuth                     | Medium     |
+| **Household workspaces**  | `households` + `household_members` tables        | Medium     |
+| **Real-time sync**        | SSE resource route                               | Medium     |
+| **Meal ratings**          | `meal_ratings` table                             | Low        |
+| **Week templates**        | `templateName` column + clone action             | Low        |
+| **Nutritional dashboard** | AI-powered macro analysis                        | Medium     |
+| **Batch cook planner**    | Prep schedule generator                          | Medium     |
 
 ---
 
