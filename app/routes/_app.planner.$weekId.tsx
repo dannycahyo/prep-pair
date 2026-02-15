@@ -1,9 +1,10 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link } from "react-router";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { Link, redirect, useFetcher } from "react-router";
 import { WeekCalendar } from "~/components/planner/week-calendar";
 import { WeekSummary } from "~/components/planner/week-summary";
 import { Button } from "~/components/ui/button";
 import { requireAuth } from "~/lib/services/auth.service";
+import { generateGroceryList } from "~/lib/services/grocery.service";
 import {
 	assignRecipeToSlot,
 	getOrCreateWeekPlan,
@@ -119,6 +120,17 @@ export async function action({ request }: Route.ActionArgs) {
 			return { success: true };
 		}
 
+		case "generate-grocery": {
+			const mealPlanId = formData.get("mealPlanId") as string;
+			if (!mealPlanId) return { error: "Missing plan ID" };
+			const plan = await getWeekPlanWithSlots(mealPlanId);
+			if (!plan || plan.userId !== userId) {
+				return { error: "Not authorized" };
+			}
+			await generateGroceryList(mealPlanId);
+			throw redirect(`/grocery/${mealPlanId}`);
+		}
+
 		default:
 			return { error: "Unknown intent" };
 	}
@@ -126,6 +138,14 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function PlannerWeek({ loaderData }: Route.ComponentProps) {
 	const { plan, recipes, prevPlanId, nextPlanId } = loaderData;
+	const fetcher = useFetcher();
+	const isGenerating =
+		fetcher.state !== "idle" &&
+		fetcher.formData?.get("intent") === "generate-grocery";
+
+	const hasRecipes = plan.slots.some(
+		(s: { recipeId: string | null }) => s.recipeId,
+	);
 
 	return (
 		<div className="space-y-4">
@@ -147,6 +167,22 @@ export default function PlannerWeek({ loaderData }: Route.ComponentProps) {
 			</div>
 
 			<WeekSummary slots={plan.slots} />
+
+			{/* Generate Grocery List button */}
+			{hasRecipes && (
+				<fetcher.Form method="post">
+					<input type="hidden" name="intent" value="generate-grocery" />
+					<input type="hidden" name="mealPlanId" value={plan.id} />
+					<Button
+						type="submit"
+						className="w-full sm:w-auto"
+						disabled={isGenerating}
+					>
+						<ShoppingCart className="h-4 w-4 mr-2" />
+						{isGenerating ? "Generating..." : "Generate Grocery List"}
+					</Button>
+				</fetcher.Form>
+			)}
 
 			<WeekCalendar plan={plan} recipes={recipes} />
 		</div>
