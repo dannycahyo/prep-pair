@@ -549,10 +549,13 @@ export default function RecipeDetail({
 						</AlertDialogHeader>
 						<AlertDialogFooter>
 							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<fetcher.Form method="post">
-								<input type="hidden" name="intent" value="delete" />
-								<AlertDialogAction type="submit">Delete</AlertDialogAction>
-							</fetcher.Form>
+							<AlertDialogAction
+								onClick={() => {
+									fetcher.submit({ intent: "delete" }, { method: "post" });
+								}}
+							>
+								Delete
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
