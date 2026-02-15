@@ -55,7 +55,5 @@
 		"vite": "^7.1.7",
 		"vite-tsconfig-paths": "^5.1.4"
 	},
-	"pnpm": {
-		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
-	}
+	"trustedDependencies": ["@biomejs/biome", "esbuild"]
 }
