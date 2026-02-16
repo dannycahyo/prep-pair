@@ -125,142 +125,150 @@ export default function SettingsPage({ loaderData }: Route.ComponentProps) {
 	}, [pinData, toast]);
 
 	return (
-		<div className="space-y-6 max-w-md">
+		<div className="space-y-6">
 			<h1 className="text-2xl font-bold">
 				<Settings className="inline h-6 w-6 mr-2 align-text-bottom" />
 				Settings
 			</h1>
 
-			{/* Budget & Servings */}
-			<settingsFetcher.Form method="post" className="space-y-6">
-				<input type="hidden" name="intent" value="update-settings" />
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+				{/* Left column: Budget & Servings */}
+				<settingsFetcher.Form method="post" className="space-y-6">
+					<input type="hidden" name="intent" value="update-settings" />
 
-				<div className="rounded-lg border border-border bg-card p-4 space-y-4">
-					<h2 className="font-semibold">Budget</h2>
-					<div className="space-y-2">
-						<Label htmlFor="weeklyBudget">Weekly Budget (IDR)</Label>
-						<Input
-							id="weeklyBudget"
-							name="weeklyBudget"
-							type="number"
-							defaultValue={weeklyBudget}
-							min="0"
-							step="1000"
-							required
-						/>
-						<p className="text-xs text-muted-foreground">
-							Current: {formatIDR(weeklyBudget)}
-						</p>
-						{settingsData?.intent === "update-settings" &&
-							settingsData.errors?.weeklyBudget && (
-								<p className="text-sm text-destructive">
-									{settingsData.errors.weeklyBudget[0]}
-								</p>
-							)}
-					</div>
-				</div>
-
-				<div className="rounded-lg border border-border bg-card p-4 space-y-4">
-					<h2 className="font-semibold">Meal Planning</h2>
-					<div className="space-y-2">
-						<Label htmlFor="defaultServings">Default Servings</Label>
-						<Input
-							id="defaultServings"
-							name="defaultServings"
-							type="number"
-							defaultValue={defaultServings}
-							min="1"
-							max="20"
-							required
-						/>
-						<p className="text-xs text-muted-foreground">
-							Number of servings when adding new recipes
-						</p>
-						{settingsData?.intent === "update-settings" &&
-							settingsData.errors?.defaultServings && (
-								<p className="text-sm text-destructive">
-									{settingsData.errors.defaultServings[0]}
-								</p>
-							)}
-					</div>
-				</div>
-
-				<Button
-					type="submit"
-					disabled={isSettingsSubmitting}
-					className="w-full"
-				>
-					{isSettingsSubmitting ? "Saving..." : "Save Settings"}
-				</Button>
-			</settingsFetcher.Form>
-
-			{/* Change PIN */}
-			<pinFetcher.Form method="post" className="space-y-4" ref={pinFormRef}>
-				<input type="hidden" name="intent" value="change-pin" />
-
-				<div className="rounded-lg border border-border bg-card p-4 space-y-4">
-					<h2 className="font-semibold">
-						<Lock className="inline h-4 w-4 mr-1 align-text-bottom" />
-						Change PIN
-					</h2>
-
-					{pinData?.intent === "change-pin" &&
-						"pinError" in pinData &&
-						pinData.pinError && (
-							<p className="text-sm text-destructive">{pinData.pinError}</p>
-						)}
-
-					<div className="space-y-2">
-						<Label htmlFor="currentPin">Current PIN</Label>
-						<Input
-							id="currentPin"
-							name="currentPin"
-							type="password"
-							required
-							autoComplete="current-password"
-						/>
+					<div className="rounded-lg border border-border bg-card p-4 space-y-4">
+						<h2 className="font-semibold">Budget</h2>
+						<div className="space-y-2">
+							<Label htmlFor="weeklyBudget">Weekly Budget (IDR)</Label>
+							<Input
+								id="weeklyBudget"
+								name="weeklyBudget"
+								type="number"
+								defaultValue={weeklyBudget}
+								min="0"
+								step="1000"
+								required
+							/>
+							<p className="text-xs text-muted-foreground">
+								Current: {formatIDR(weeklyBudget)}
+							</p>
+							{settingsData?.intent === "update-settings" &&
+								settingsData.errors?.weeklyBudget && (
+									<p className="text-sm text-destructive">
+										{settingsData.errors.weeklyBudget[0]}
+									</p>
+								)}
+						</div>
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="newPin">New PIN</Label>
-						<Input
-							id="newPin"
-							name="newPin"
-							type="password"
-							required
-							minLength={4}
-							autoComplete="new-password"
-						/>
+					<div className="rounded-lg border border-border bg-card p-4 space-y-4">
+						<h2 className="font-semibold">Meal Planning</h2>
+						<div className="space-y-2">
+							<Label htmlFor="defaultServings">Default Servings</Label>
+							<Input
+								id="defaultServings"
+								name="defaultServings"
+								type="number"
+								defaultValue={defaultServings}
+								min="1"
+								max="20"
+								required
+							/>
+							<p className="text-xs text-muted-foreground">
+								Number of servings when adding new recipes
+							</p>
+							{settingsData?.intent === "update-settings" &&
+								settingsData.errors?.defaultServings && (
+									<p className="text-sm text-destructive">
+										{settingsData.errors.defaultServings[0]}
+									</p>
+								)}
+						</div>
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="confirmPin">Confirm New PIN</Label>
-						<Input
-							id="confirmPin"
-							name="confirmPin"
-							type="password"
-							required
-							minLength={4}
-							autoComplete="new-password"
-						/>
-					</div>
-
-					<Button type="submit" variant="outline" disabled={isPinSubmitting}>
-						{isPinSubmitting ? "Changing..." : "Change PIN"}
+					<Button
+						type="submit"
+						disabled={isSettingsSubmitting}
+						className="w-full"
+					>
+						{isSettingsSubmitting ? "Saving..." : "Save Settings"}
 					</Button>
-				</div>
-			</pinFetcher.Form>
+				</settingsFetcher.Form>
 
-			{/* App Info */}
-			<div className="rounded-lg border border-border bg-card p-4 space-y-2">
-				<h2 className="font-semibold">
-					<Info className="inline h-4 w-4 mr-1 align-text-bottom" />
-					About PrepPair
-				</h2>
-				<div className="text-sm text-muted-foreground space-y-1">
-					<p>Version 1.0.0</p>
-					<p>Meal prep made easy for couples.</p>
-					<p>Built with React Router v7, TypeScript, and PostgreSQL.</p>
+				{/* Right column: Change PIN & About */}
+				<div className="space-y-6">
+					<pinFetcher.Form method="post" className="space-y-4" ref={pinFormRef}>
+						<input type="hidden" name="intent" value="change-pin" />
+
+						<div className="rounded-lg border border-border bg-card p-4 space-y-4">
+							<h2 className="font-semibold">
+								<Lock className="inline h-4 w-4 mr-1 align-text-bottom" />
+								Change PIN
+							</h2>
+
+							{pinData?.intent === "change-pin" &&
+								"pinError" in pinData &&
+								pinData.pinError && (
+									<p className="text-sm text-destructive">{pinData.pinError}</p>
+								)}
+
+							<div className="space-y-2">
+								<Label htmlFor="currentPin">Current PIN</Label>
+								<Input
+									id="currentPin"
+									name="currentPin"
+									type="password"
+									required
+									autoComplete="current-password"
+								/>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="newPin">New PIN</Label>
+								<Input
+									id="newPin"
+									name="newPin"
+									type="password"
+									required
+									minLength={4}
+									autoComplete="new-password"
+								/>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="confirmPin">Confirm New PIN</Label>
+								<Input
+									id="confirmPin"
+									name="confirmPin"
+									type="password"
+									required
+									minLength={4}
+									autoComplete="new-password"
+								/>
+							</div>
+
+							<Button
+								type="submit"
+								variant="outline"
+								disabled={isPinSubmitting}
+							>
+								{isPinSubmitting ? "Changing..." : "Change PIN"}
+							</Button>
+						</div>
+					</pinFetcher.Form>
+
+					{/* App Info */}
+					<div className="rounded-lg border border-border bg-card p-4 space-y-2">
+						<h2 className="font-semibold">
+							<Info className="inline h-4 w-4 mr-1 align-text-bottom" />
+							About PrepPair
+						</h2>
+						<div className="text-sm text-muted-foreground space-y-1">
+							<p>Version 1.0.0</p>
+							<p>Meal prep made easy for couples.</p>
+							<p>Built with React Router v7, TypeScript, and PostgreSQL.</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
