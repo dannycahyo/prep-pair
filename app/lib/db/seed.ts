@@ -26,7 +26,9 @@ async function seed() {
 
 	console.log(`Created user: ${user.id}`);
 
-	// Sample Indonesian recipes
+	// ── Recipes ─────────────────────────────────────────
+	const recipeIds: string[] = [];
+
 	const recipesData = [
 		{
 			title: "Nasi Goreng",
@@ -67,32 +69,37 @@ async function seed() {
 				},
 			],
 			ingredients: [
-				{ name: "Cooked rice", quantity: "400", unit: "g", category: "grains" },
-				{ name: "Eggs", quantity: "2", unit: "pcs", category: "protein" },
-				{ name: "Garlic", quantity: "3", unit: "cloves", category: "produce" },
+				{ name: "Cooked rice", quantity: "400", unit: "g", category: "Grains" },
+				{ name: "Eggs", quantity: "2", unit: "pcs", category: "Protein" },
+				{
+					name: "Garlic",
+					quantity: "3",
+					unit: "cloves",
+					category: "Produce",
+				},
 				{
 					name: "Shallots",
 					quantity: "4",
 					unit: "pcs",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Kecap manis",
 					quantity: "2",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 				{
 					name: "Soy sauce",
 					quantity: "1",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 				{
 					name: "Vegetable oil",
 					quantity: "2",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 			],
 		},
@@ -138,39 +145,44 @@ async function seed() {
 					name: "Chicken thighs",
 					quantity: "300",
 					unit: "g",
-					category: "protein",
+					category: "Protein",
 				},
 				{
 					name: "Vermicelli",
 					quantity: "100",
 					unit: "g",
-					category: "grains",
+					category: "Grains",
 				},
-				{ name: "Eggs", quantity: "2", unit: "pcs", category: "protein" },
+				{ name: "Eggs", quantity: "2", unit: "pcs", category: "Protein" },
 				{
 					name: "Turmeric",
 					quantity: "2",
 					unit: "cm",
-					category: "produce",
+					category: "Produce",
 				},
-				{ name: "Garlic", quantity: "3", unit: "cloves", category: "produce" },
+				{
+					name: "Garlic",
+					quantity: "3",
+					unit: "cloves",
+					category: "Produce",
+				},
 				{
 					name: "Shallots",
 					quantity: "5",
 					unit: "pcs",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Lemongrass",
 					quantity: "2",
 					unit: "stalks",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Bean sprouts",
 					quantity: "100",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
 			],
 		},
@@ -214,45 +226,50 @@ async function seed() {
 					name: "Firm tofu",
 					quantity: "200",
 					unit: "g",
-					category: "protein",
+					category: "Protein",
 				},
 				{
 					name: "Cabbage",
 					quantity: "150",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Green beans",
 					quantity: "100",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Bean sprouts",
 					quantity: "100",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Potatoes",
 					quantity: "2",
 					unit: "pcs",
-					category: "produce",
+					category: "Produce",
 				},
-				{ name: "Eggs", quantity: "2", unit: "pcs", category: "protein" },
+				{ name: "Eggs", quantity: "2", unit: "pcs", category: "Protein" },
 				{
 					name: "Roasted peanuts",
 					quantity: "100",
 					unit: "g",
-					category: "pantry",
+					category: "Pantry",
 				},
-				{ name: "Garlic", quantity: "2", unit: "cloves", category: "produce" },
+				{
+					name: "Garlic",
+					quantity: "2",
+					unit: "cloves",
+					category: "Produce",
+				},
 				{
 					name: "Kecap manis",
 					quantity: "1",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 			],
 		},
@@ -296,35 +313,40 @@ async function seed() {
 					name: "Chicken thighs",
 					quantity: "400",
 					unit: "g",
-					category: "protein",
+					category: "Protein",
 				},
 				{
 					name: "Kecap manis",
 					quantity: "3",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 				{
 					name: "Soy sauce",
 					quantity: "1",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
-				{ name: "Garlic", quantity: "4", unit: "cloves", category: "produce" },
+				{
+					name: "Garlic",
+					quantity: "4",
+					unit: "cloves",
+					category: "Produce",
+				},
 				{
 					name: "Shallots",
 					quantity: "3",
 					unit: "pcs",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Lemongrass",
 					quantity: "1",
 					unit: "stalk",
-					category: "produce",
+					category: "Produce",
 				},
-				{ name: "Lime", quantity: "1", unit: "pcs", category: "produce" },
-				{ name: "Ginger", quantity: "2", unit: "cm", category: "produce" },
+				{ name: "Lime", quantity: "1", unit: "pcs", category: "Produce" },
+				{ name: "Ginger", quantity: "2", unit: "cm", category: "Produce" },
 			],
 		},
 		{
@@ -369,39 +391,44 @@ async function seed() {
 					name: "Egg noodles",
 					quantity: "200",
 					unit: "g",
-					category: "grains",
+					category: "Grains",
 				},
-				{ name: "Garlic", quantity: "3", unit: "cloves", category: "produce" },
+				{
+					name: "Garlic",
+					quantity: "3",
+					unit: "cloves",
+					category: "Produce",
+				},
 				{
 					name: "Cabbage",
 					quantity: "100",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
 				{
 					name: "Bok choy",
 					quantity: "100",
 					unit: "g",
-					category: "produce",
+					category: "Produce",
 				},
-				{ name: "Eggs", quantity: "2", unit: "pcs", category: "protein" },
+				{ name: "Eggs", quantity: "2", unit: "pcs", category: "Protein" },
 				{
 					name: "Kecap manis",
 					quantity: "2",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 				{
 					name: "Soy sauce",
 					quantity: "1",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 				{
 					name: "Vegetable oil",
 					quantity: "2",
 					unit: "tbsp",
-					category: "pantry",
+					category: "Pantry",
 				},
 			],
 		},
@@ -410,6 +437,7 @@ async function seed() {
 	for (const recipeData of recipesData) {
 		const { ingredients, ...recipeFields } = recipeData;
 		const recipeId = createId();
+		recipeIds.push(recipeId);
 
 		await db.insert(schema.recipes).values({
 			id: recipeId,
@@ -431,7 +459,75 @@ async function seed() {
 		console.log(`Created recipe: ${recipeData.title}`);
 	}
 
-	console.log("Seeding complete!");
+	// ── Meal Plan for current week (Feb 16, 2026 = Monday) ──
+	const currentWeekMonday = "2026-02-16";
+	const planId = createId();
+
+	await db.insert(schema.mealPlans).values({
+		id: planId,
+		userId: user.id,
+		weekStartDate: currentWeekMonday,
+	});
+
+	console.log(`Created meal plan for week of ${currentWeekMonday}`);
+
+	// Assign all 5 recipes across the week
+	// Nasi Goreng → Mon lunch, Soto Ayam → Tue dinner, Gado-Gado → Wed lunch,
+	// Ayam Bakar → Thu dinner, Mie Goreng → Fri lunch,
+	// Nasi Goreng again → Sat dinner (tests deduplication),
+	// Soto Ayam again → Sun lunch (tests deduplication)
+	const slotAssignments = [
+		{ recipeIdx: 0, dayOfWeek: 0, mealType: "lunch" as const },
+		{ recipeIdx: 1, dayOfWeek: 1, mealType: "dinner" as const },
+		{ recipeIdx: 2, dayOfWeek: 2, mealType: "lunch" as const },
+		{ recipeIdx: 3, dayOfWeek: 3, mealType: "dinner" as const },
+		{ recipeIdx: 4, dayOfWeek: 4, mealType: "lunch" as const },
+		{ recipeIdx: 0, dayOfWeek: 5, mealType: "dinner" as const },
+		{ recipeIdx: 1, dayOfWeek: 6, mealType: "lunch" as const },
+	];
+
+	for (const slot of slotAssignments) {
+		await db.insert(schema.mealSlots).values({
+			mealPlanId: planId,
+			recipeId: recipeIds[slot.recipeIdx],
+			dayOfWeek: slot.dayOfWeek,
+			mealType: slot.mealType,
+		});
+	}
+
+	console.log(`Assigned ${slotAssignments.length} recipes to meal slots`);
+
+	// ── Budget entries across last 4 weeks ──────────────
+	const budgetData = [
+		// 3 weeks ago (Jan 26)
+		{ amount: "125000", store: "Superindo", date: "2026-01-26" },
+		{ amount: "85000", store: "Pasar Minggu", date: "2026-01-28" },
+		{ amount: "45000", store: "Alfamart", date: "2026-01-30" },
+		// 2 weeks ago (Feb 2)
+		{ amount: "175000", store: "Superindo", date: "2026-02-02" },
+		{ amount: "62000", store: "Pasar Minggu", date: "2026-02-04" },
+		{ amount: "98000", store: "Hypermart", date: "2026-02-06" },
+		{ amount: "55000", store: "Alfamart", date: "2026-02-08" },
+		// 1 week ago (Feb 9)
+		{ amount: "210000", store: "Superindo", date: "2026-02-09" },
+		{ amount: "75000", store: "Pasar Minggu", date: "2026-02-11" },
+		{ amount: "130000", store: "Hypermart", date: "2026-02-14" },
+		// Current week (Feb 16)
+		{ amount: "155000", store: "Superindo", date: "2026-02-16" },
+		{ amount: "88000", store: "Pasar Minggu", date: "2026-02-17" },
+	];
+
+	for (const entry of budgetData) {
+		await db.insert(schema.budgetEntries).values({
+			userId: user.id,
+			...entry,
+		});
+	}
+
+	console.log(`Created ${budgetData.length} budget entries`);
+
+	console.log("\nSeeding complete!");
+	console.log("Login PIN: 1234");
 	await client.end();
 	process.exit(0);
 }
