@@ -48,7 +48,7 @@ Phase 5 ─── PWA, Polish & Launch Prep            [Weeks 9–10]
 
 | #    | Task                  | Tag       | Description                                                                                                                                                                             |
 | ---- | --------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1  | Initialize project    | 🟢 Must   | Scaffold React Router v7 (framework mode) with TypeScript, Vite, pnpm. Configure `react-router.config.ts` and `vite.config.ts`.                                                         |
+| 1.1  | Initialize project    | 🟢 Must   | Scaffold React Router v7 (framework mode) with TypeScript, Vite, bun. Configure `react-router.config.ts` and `vite.config.ts`.                                                          |
 | 1.2  | Configure tooling     | 🟢 Must   | Setup Biome (lint + format), configure `tsconfig.json`, add `.env.example`, create `README.md` with setup instructions.                                                                 |
 | 1.3  | Docker Compose        | 🟢 Must   | Create `docker-compose.yml` with PostgreSQL 16. Verify service starts and is reachable.                                                                                                 |
 | 1.4  | Drizzle ORM setup     | 🟢 Must   | Install Drizzle + drizzle-kit. Create `drizzle.config.ts`. Write the full database schema (`schema.ts`) with all 6 tables, enums, relations, and indexes as defined in TRD Section 4.3. |
@@ -64,13 +64,13 @@ Phase 5 ─── PWA, Polish & Launch Prep            [Weeks 9–10]
 | #    | Criteria                                                                    | Status |
 | ---- | --------------------------------------------------------------------------- | ------ |
 | C1.1 | `docker-compose up` starts PostgreSQL without errors                        | ☐      |
-| C1.2 | `pnpm dev` starts the app at `localhost:3000`                               | ☐      |
+| C1.2 | `bun dev` starts the app at `localhost:3000`                                | ☐      |
 | C1.3 | First-time visit redirects to `/setup` → set PIN → redirected to `/planner` | ☐      |
 | C1.4 | Subsequent visits show `/login` → enter PIN → redirected to `/planner`      | ☐      |
 | C1.5 | Wrong PIN shows error; correct PIN unlocks the app                          | ☐      |
 | C1.6 | Sidebar navigation works between all sections                               | ☐      |
 | C1.7 | `drizzle-kit studio` shows all 6 tables with correct columns                | ☐      |
-| C1.8 | `pnpm biome check .` passes with no errors                                  | ☐      |
+| C1.8 | `bun biome check .` passes with no errors                                   | ☐      |
 
 ---
 

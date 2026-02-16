@@ -75,7 +75,7 @@ The v1 design prioritizes **simplicity**: single-user, PIN-protected, no AI, no 
 | State           | React Router loaderData + React useState  | No external state library needed for v1 complexity                   |
 | Validation      | Zod                                       | Shared client/server schema validation                               |
 | AI              | Deferred to v2                            | Ship core app first; add LangChain + LLM integration later           |
-| Package Manager | pnpm                                      | Fast, disk-efficient                                                 |
+| Package Manager | bun                                       | Fast, disk-efficient                                                 |
 
 ---
 
@@ -117,7 +117,7 @@ The v1 design prioritizes **simplicity**: single-user, PIN-protected, no AI, no 
 
 | Tool               | Purpose                                 |
 | ------------------ | --------------------------------------- |
-| **pnpm**           | Package management                      |
+| **bun**            | Package management                      |
 | **Vite**           | Build tool (via React Router v7 plugin) |
 | **Biome**          | Linting and formatting                  |
 | **Vitest**         | Unit and integration testing            |
@@ -684,7 +684,7 @@ export default defineConfig({
 **Required components:**
 
 ```bash
-pnpm dlx shadcn@latest add button card dialog input label select \
+bun dlx shadcn@latest add button card dialog input label select \
   sidebar table tabs toast form checkbox badge separator \
   skeleton progress popover dropdown-menu sheet
 ```
@@ -1142,11 +1142,11 @@ volumes:
 
 ### 10.1 Targets
 
-| Environment     | Platform                  | Database                    |
-| --------------- | ------------------------- | --------------------------- |
-| **Development** | Local (Docker + pnpm dev) | Local PostgreSQL            |
-| **Staging**     | Vercel Preview            | Neon PostgreSQL (free tier) |
-| **Production**  | Vercel / Cloudflare       | Neon or Supabase PostgreSQL |
+| Environment     | Platform                 | Database                    |
+| --------------- | ------------------------ | --------------------------- |
+| **Development** | Local (Docker + bun dev) | Local PostgreSQL            |
+| **Staging**     | Vercel Preview           | Neon PostgreSQL (free tier) |
+| **Production**  | Vercel / Cloudflare      | Neon or Supabase PostgreSQL |
 
 ### 10.2 CI Pipeline (GitHub Actions)
 
@@ -1169,25 +1169,25 @@ jobs:
         ports: ['5432:5432']
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: bun/action-setup@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: pnpm }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm biome check .
-      - run: pnpm tsc --noEmit
-      - run: pnpm vitest run
+        with: { node-version: 22, cache: bun }
+      - run: bun install --frozen-lockfile
+      - run: bun biome check .
+      - run: bun tsc --noEmit
+      - run: bun vitest run
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/preppair_test
-      - run: pnpm build
+      - run: bun build
 ```
 
 ### 10.3 Database Migrations
 
 ```bash
-pnpm drizzle-kit generate    # Generate migration from schema changes
-pnpm drizzle-kit migrate     # Apply migrations
-pnpm drizzle-kit push        # Push schema directly (dev only)
-pnpm drizzle-kit studio      # Visual DB inspector
+bun drizzle-kit generate    # Generate migration from schema changes
+bun drizzle-kit migrate     # Apply migrations
+bun drizzle-kit push        # Push schema directly (dev only)
+bun drizzle-kit studio      # Visual DB inspector
 ```
 
 ---
