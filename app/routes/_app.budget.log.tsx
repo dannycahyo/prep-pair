@@ -26,7 +26,7 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	await createBudgetEntry(userId, parsed.data);
-	throw redirect("/budget");
+	throw redirect("/budget?logged=true");
 }
 
 export default function LogExpense() {

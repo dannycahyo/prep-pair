@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import { Link, redirect, useFetcher } from "react-router";
 import { WeekCalendar } from "~/components/planner/week-calendar";
 import { WeekSummary } from "~/components/planner/week-summary";
+import { PlannerSkeleton } from "~/components/shared/loading-skeleton";
 import { Button } from "~/components/ui/button";
 import { requireAuth } from "~/lib/services/auth.service";
 import { generateGroceryList } from "~/lib/services/grocery.service";
@@ -128,7 +129,7 @@ export async function action({ request }: Route.ActionArgs) {
 				return { error: "Not authorized" };
 			}
 			await generateGroceryList(mealPlanId);
-			throw redirect(`/grocery/${mealPlanId}`);
+			throw redirect(`/grocery/${mealPlanId}?generated=true`);
 		}
 
 		default:
@@ -187,4 +188,8 @@ export default function PlannerWeek({ loaderData }: Route.ComponentProps) {
 			<WeekCalendar plan={plan} recipes={recipes} />
 		</div>
 	);
+}
+
+export function HydrateFallback() {
+	return <PlannerSkeleton />;
 }
