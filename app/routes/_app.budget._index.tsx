@@ -32,7 +32,7 @@ export async function loader({ request }: { request: Request }) {
 	const weeklySpent = await getWeeklySpending(userId, currentMonday);
 
 	const recentEntries = await getBudgetEntries(userId);
-	const spendingTrend = await getSpendingTrend(userId, 8);
+	const spendingTrend = await getSpendingTrend(userId, 4);
 
 	return {
 		weeklyBudget,
@@ -98,7 +98,7 @@ export default function BudgetOverview({
 			{/* Spending Trend Chart */}
 			<div className="rounded-lg border border-border bg-card p-4">
 				<h2 className="text-sm font-medium text-muted-foreground mb-3">
-					Spending Trend (Last 8 Weeks)
+					Spending Trend (Last 4 Weeks)
 				</h2>
 				<SpendingChart data={spendingTrend} budget={weeklyBudget} />
 			</div>

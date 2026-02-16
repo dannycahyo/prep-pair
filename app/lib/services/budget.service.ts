@@ -59,7 +59,7 @@ export async function getWeeklySpending(
 
 export async function getSpendingTrend(
 	userId: string,
-	weeks = 8,
+	weeks = 4,
 ): Promise<{ week: string; total: number }[]> {
 	const now = new Date();
 	const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
