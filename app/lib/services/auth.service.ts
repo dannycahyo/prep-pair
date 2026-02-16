@@ -53,6 +53,28 @@ export async function hasAnyUser(): Promise<boolean> {
 	return allUsers.length > 0;
 }
 
+export async function changePin(
+	userId: string,
+	currentPin: string,
+	newPin: string,
+): Promise<{ success: boolean; error?: string }> {
+	const user = await db.query.users.findFirst({
+		where: eq(users.id, userId),
+	});
+	if (!user) return { success: false, error: "User not found" };
+
+	const valid = await bcrypt.compare(currentPin, user.pinHash);
+	if (!valid) return { success: false, error: "Current PIN is incorrect" };
+
+	const newHash = await bcrypt.hash(newPin, 10);
+	await db
+		.update(users)
+		.set({ pinHash: newHash, updatedAt: new Date() })
+		.where(eq(users.id, userId));
+
+	return { success: true };
+}
+
 export function createSessionCookie(userId: string): string {
 	return `${SESSION_COOKIE}=${userId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`;
 }

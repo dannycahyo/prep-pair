@@ -1,9 +1,12 @@
 import { format } from "date-fns";
 import { Plus, Trash2, Wallet } from "lucide-react";
-import { Link, useFetcher } from "react-router";
+import { useEffect } from "react";
+import { Link, useFetcher, useSearchParams } from "react-router";
 import { BudgetProgress } from "~/components/budget/budget-progress";
 import { SpendingChart } from "~/components/budget/spending-chart";
+import { BudgetSkeleton } from "~/components/shared/loading-skeleton";
 import { Button } from "~/components/ui/button";
+import { useToast } from "~/components/ui/use-toast";
 import { requireAuth } from "~/lib/services/auth.service";
 import {
 	deleteBudgetEntry,
@@ -70,6 +73,26 @@ export default function BudgetOverview({
 	const { weeklyBudget, weeklySpent, recentEntries, spendingTrend } =
 		loaderData;
 	const fetcher = useFetcher();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const { toast } = useToast();
+
+	// Toast for newly logged expense (redirected from /budget/log)
+	useEffect(() => {
+		if (searchParams.get("logged") === "true") {
+			toast({ title: "Expense logged" });
+			setSearchParams((prev) => {
+				prev.delete("logged");
+				return prev;
+			});
+		}
+	}, [searchParams, setSearchParams, toast]);
+
+	// Toast for delete entry
+	useEffect(() => {
+		if (fetcher.data && "success" in fetcher.data && fetcher.data.success) {
+			toast({ title: "Expense deleted" });
+		}
+	}, [fetcher.data, toast]);
 
 	return (
 		<div className="space-y-6">
@@ -150,4 +173,8 @@ export default function BudgetOverview({
 			</div>
 		</div>
 	);
+}
+
+export function HydrateFallback() {
+	return <BudgetSkeleton />;
 }

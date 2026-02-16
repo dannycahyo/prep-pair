@@ -1,5 +1,8 @@
 import { Book, Calendar, Settings, ShoppingCart, Wallet } from "lucide-react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, isRouteErrorResponse } from "react-router";
+import { InstallPrompt } from "~/components/shared/install-prompt";
+import { OfflineBanner } from "~/components/shared/offline-banner";
+import { Toaster } from "~/components/ui/toaster";
 import { requireAuth } from "~/lib/services/auth.service";
 import type { Route } from "./+types/_app";
 
@@ -48,12 +51,14 @@ export default function AppLayout() {
 
 			{/* Main content */}
 			<div className="flex flex-1 flex-col overflow-hidden">
+				<OfflineBanner />
+
 				{/* Mobile header */}
 				<header className="flex md:hidden items-center justify-between border-b border-border px-4 py-3">
 					<h1 className="text-lg font-bold">PrepPair</h1>
 				</header>
 
-				<main className="flex-1 overflow-y-auto p-6">
+				<main className="flex-1 overflow-y-auto p-4 sm:p-6">
 					<Outlet />
 				</main>
 
@@ -76,6 +81,41 @@ export default function AppLayout() {
 						</NavLink>
 					))}
 				</nav>
+			</div>
+
+			<Toaster />
+			<InstallPrompt />
+		</div>
+	);
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+	let message = "Something went wrong";
+	let details = "An unexpected error occurred. Please try again.";
+
+	if (isRouteErrorResponse(error)) {
+		message = error.status === 404 ? "Page not found" : `Error ${error.status}`;
+		details =
+			error.status === 404
+				? "The page you're looking for doesn't exist."
+				: error.statusText || details;
+	}
+
+	return (
+		<div className="flex h-screen items-center justify-center p-6">
+			<div className="text-center max-w-md space-y-4">
+				<div className="text-6xl font-bold text-muted-foreground">
+					{message}
+				</div>
+				<p className="text-muted-foreground">{details}</p>
+				<div className="flex justify-center gap-3">
+					<a
+						href="/planner"
+						className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+					>
+						Go to Planner
+					</a>
+				</div>
 			</div>
 		</div>
 	);

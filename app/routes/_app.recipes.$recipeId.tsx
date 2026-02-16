@@ -7,13 +7,21 @@ import {
 	Trash2,
 	Users,
 } from "lucide-react";
-import { useState } from "react";
-import { Form, Link, redirect, useFetcher, useNavigation } from "react-router";
+import { useEffect, useState } from "react";
+import {
+	Form,
+	Link,
+	redirect,
+	useFetcher,
+	useNavigation,
+	useSearchParams,
+} from "react-router";
 import {
 	IngredientInput,
 	createIngredientRow,
 } from "~/components/recipes/ingredient-input";
 import { ServingScaler } from "~/components/recipes/serving-scaler";
+import { RecipeDetailSkeleton } from "~/components/shared/loading-skeleton";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -38,6 +46,7 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
+import { useToast } from "~/components/ui/use-toast";
 import { requireAuth } from "~/lib/services/auth.service";
 import {
 	deleteRecipe,
@@ -127,6 +136,26 @@ export default function RecipeDetail({
 	const { recipe } = loaderData;
 	const fetcher = useFetcher();
 	const navigation = useNavigation();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const { toast } = useToast();
+
+	// Toast for newly created recipe (redirected from /recipes/new)
+	useEffect(() => {
+		if (searchParams.get("created") === "true") {
+			toast({ title: "Recipe created" });
+			setSearchParams((prev) => {
+				prev.delete("created");
+				return prev;
+			});
+		}
+	}, [searchParams, setSearchParams, toast]);
+
+	// Toast on successful update
+	useEffect(() => {
+		if (actionData && "updated" in actionData && actionData.updated) {
+			toast({ title: "Recipe updated" });
+		}
+	}, [actionData, toast]);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [scaledServings, setScaledServings] = useState(recipe.servings);
@@ -689,4 +718,8 @@ export default function RecipeDetail({
 			)}
 		</div>
 	);
+}
+
+export function HydrateFallback() {
+	return <RecipeDetailSkeleton />;
 }

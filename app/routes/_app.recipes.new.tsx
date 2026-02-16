@@ -56,7 +56,7 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	const recipe = await createRecipe(result.data, userId);
-	throw redirect(`/recipes/${recipe.id}`);
+	throw redirect(`/recipes/${recipe.id}?created=true`);
 }
 
 type StepRow = {

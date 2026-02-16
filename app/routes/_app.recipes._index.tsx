@@ -1,5 +1,6 @@
 import { Clock, Heart, Plus, Search, UtensilsCrossed, X } from "lucide-react";
 import { Link, useFetcher, useSearchParams } from "react-router";
+import { RecipeGridSkeleton } from "~/components/shared/loading-skeleton";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -221,4 +222,8 @@ export default function RecipeList({ loaderData }: Route.ComponentProps) {
 			)}
 		</div>
 	);
+}
+
+export function HydrateFallback() {
+	return <RecipeGridSkeleton />;
 }

@@ -1,12 +1,16 @@
 import {
+	Calendar,
 	ChevronLeft,
 	ChevronRight,
 	ListRestart,
 	ShoppingCart,
 } from "lucide-react";
-import { Link, useFetcher } from "react-router";
+import { useEffect } from "react";
+import { Link, useFetcher, useSearchParams } from "react-router";
 import { GroceryList } from "~/components/grocery/grocery-list";
+import { GrocerySkeleton } from "~/components/shared/loading-skeleton";
 import { Button } from "~/components/ui/button";
+import { useToast } from "~/components/ui/use-toast";
 import { requireAuth } from "~/lib/services/auth.service";
 import {
 	clearCheckedItems,
@@ -94,6 +98,19 @@ export default function GroceryWeek({ loaderData }: Route.ComponentProps) {
 		nextPlanId,
 	} = loaderData;
 	const fetcher = useFetcher();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const { toast } = useToast();
+
+	// Toast for newly generated grocery list
+	useEffect(() => {
+		if (searchParams.get("generated") === "true") {
+			toast({ title: "Grocery list generated" });
+			setSearchParams((prev) => {
+				prev.delete("generated");
+				return prev;
+			});
+		}
+	}, [searchParams, setSearchParams, toast]);
 
 	return (
 		<div className="space-y-4">
@@ -153,12 +170,24 @@ export default function GroceryWeek({ loaderData }: Route.ComponentProps) {
 
 			{/* Empty state with link to planner */}
 			{counts.total === 0 && (
-				<div className="text-center">
+				<div className="flex flex-col items-center justify-center py-16 text-center">
+					<ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
+					<h2 className="text-lg font-semibold">No grocery items yet</h2>
+					<p className="text-muted-foreground mt-1 mb-4">
+						Plan your meals first, then generate a grocery list.
+					</p>
 					<Button asChild>
-						<Link to={`/planner/${plan.id}`}>Go to Meal Plan</Link>
+						<Link to={`/planner/${plan.id}`}>
+							<Calendar className="h-4 w-4 mr-1" />
+							Go to Meal Plan
+						</Link>
 					</Button>
 				</div>
 			)}
 		</div>
 	);
+}
+
+export function HydrateFallback() {
+	return <GrocerySkeleton />;
 }
