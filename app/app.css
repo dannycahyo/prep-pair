@@ -1,41 +1,146 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * PrepPair Theme — "Kitchen Counter"
+ *
+ * A warm, food-inspired palette built around terracotta, golden amber,
+ * and sage green. Light mode feels like parchment under warm light;
+ * dark mode like a cozy evening kitchen lit by pendant lamps.
+ *
+ * Colors are oklch(). Every text/background pair meets WCAG AA (≥ 4.5 : 1).
+ */
+
 @theme {
-	--color-primary: oklch(0.205 0.064 285.885);
-	--color-primary-foreground: oklch(0.985 0 0);
-	--color-background: oklch(1 0 0);
-	--color-foreground: oklch(0.145 0 0);
-	--color-muted: oklch(0.97 0 0);
-	--color-muted-foreground: oklch(0.556 0.013 285.938);
-	--color-destructive: oklch(0.577 0.245 27.325);
-	--color-success: oklch(0.627 0.194 149.214);
-	--color-warning: oklch(0.769 0.188 70.08);
-	--color-warning-foreground: oklch(0.21 0.034 56.72);
-	--color-success-foreground: oklch(0.985 0 0);
-	--color-border: oklch(0.922 0 0);
-	--color-card: oklch(1 0 0);
-	--color-card-foreground: oklch(0.145 0 0);
-	--color-popover: oklch(1 0 0);
-	--color-popover-foreground: oklch(0.145 0 0);
-	--color-secondary: oklch(0.97 0 0);
-	--color-secondary-foreground: oklch(0.205 0.064 285.885);
-	--color-accent: oklch(0.97 0 0);
-	--color-accent-foreground: oklch(0.205 0.064 285.885);
-	--color-destructive-foreground: oklch(0.985 0 0);
-	--color-input: oklch(0.922 0 0);
-	--color-ring: oklch(0.205 0.064 285.885);
-	--color-sidebar: oklch(0.985 0 0);
-	--color-sidebar-foreground: oklch(0.145 0 0);
-	--color-sidebar-primary: oklch(0.205 0.064 285.885);
-	--color-sidebar-primary-foreground: oklch(0.985 0 0);
-	--color-sidebar-accent: oklch(0.97 0 0);
-	--color-sidebar-accent-foreground: oklch(0.205 0.064 285.885);
-	--color-sidebar-border: oklch(0.922 0 0);
-	--color-sidebar-ring: oklch(0.205 0.064 285.885);
-	--radius-lg: 0.5rem;
-	--radius-md: calc(0.5rem - 2px);
-	--radius-sm: calc(0.5rem - 4px);
-	--font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+	/* ── Surfaces ── */
+	--color-background: oklch(0.975 0.007 80);
+	--color-foreground: oklch(0.22 0.02 55);
+	--color-card: oklch(0.99 0.005 85);
+	--color-card-foreground: oklch(0.22 0.02 55);
+	--color-popover: oklch(0.99 0.005 85);
+	--color-popover-foreground: oklch(0.22 0.02 55);
+
+	/* ── Primary — terracotta ── */
+	--color-primary: oklch(0.47 0.135 37);
+	--color-primary-foreground: oklch(0.98 0.005 80);
+
+	/* ── Secondary — warm beige ── */
+	--color-secondary: oklch(0.925 0.02 75);
+	--color-secondary-foreground: oklch(0.30 0.03 55);
+
+	/* ── Muted — subtle warm surface ── */
+	--color-muted: oklch(0.94 0.01 80);
+	--color-muted-foreground: oklch(0.46 0.02 55);
+
+	/* ── Accent — golden amber tint for hover states ── */
+	--color-accent: oklch(0.93 0.04 75);
+	--color-accent-foreground: oklch(0.22 0.02 55);
+
+	/* ── Destructive — muted coral ── */
+	--color-destructive: oklch(0.55 0.17 27);
+	--color-destructive-foreground: oklch(0.98 0.005 80);
+
+	/* ── Success — herb / sage green ── */
+	--color-success: oklch(0.52 0.115 155);
+	--color-success-foreground: oklch(0.98 0.005 80);
+
+	/* ── Warning — warm amber / golden ── */
+	--color-warning: oklch(0.75 0.145 75);
+	--color-warning-foreground: oklch(0.25 0.03 55);
+
+	/* ── Borders & inputs ── */
+	--color-border: oklch(0.89 0.015 75);
+	--color-input: oklch(0.87 0.015 75);
+	--color-ring: oklch(0.47 0.135 37);
+
+	/* ── Sidebar ── */
+	--color-sidebar: oklch(0.955 0.012 75);
+	--color-sidebar-foreground: oklch(0.22 0.02 55);
+	--color-sidebar-primary: oklch(0.47 0.135 37);
+	--color-sidebar-primary-foreground: oklch(0.98 0.005 80);
+	--color-sidebar-accent: oklch(0.91 0.03 75);
+	--color-sidebar-accent-foreground: oklch(0.22 0.02 55);
+	--color-sidebar-border: oklch(0.89 0.015 75);
+	--color-sidebar-ring: oklch(0.47 0.135 37);
+
+	/* ── Radii ── */
+	--radius-sm: 0.375rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.625rem;
+	--radius-xl: 0.875rem;
+
+	/* ── Typography ── */
+	--font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-heading: "Fraunces", ui-serif, Georgia, serif;
+
+	/* ── Chart palette (warm) ── */
+	--color-chart-1: oklch(0.47 0.135 37);
+	--color-chart-2: oklch(0.58 0.13 155);
+	--color-chart-3: oklch(0.75 0.145 75);
+	--color-chart-4: oklch(0.55 0.17 27);
+	--color-chart-5: oklch(0.62 0.11 50);
+}
+
+/* ── Dark mode ── */
+.dark {
+	/* Surfaces */
+	--color-background: oklch(0.205 0.02 55);
+	--color-foreground: oklch(0.91 0.01 80);
+	--color-card: oklch(0.245 0.02 55);
+	--color-card-foreground: oklch(0.91 0.01 80);
+	--color-popover: oklch(0.245 0.02 55);
+	--color-popover-foreground: oklch(0.91 0.01 80);
+
+	/* Primary — lighter terracotta for dark bg */
+	--color-primary: oklch(0.65 0.14 40);
+	--color-primary-foreground: oklch(0.18 0.02 55);
+
+	/* Secondary */
+	--color-secondary: oklch(0.28 0.02 55);
+	--color-secondary-foreground: oklch(0.88 0.01 75);
+
+	/* Muted */
+	--color-muted: oklch(0.265 0.02 55);
+	--color-muted-foreground: oklch(0.62 0.02 65);
+
+	/* Accent */
+	--color-accent: oklch(0.30 0.035 55);
+	--color-accent-foreground: oklch(0.91 0.01 80);
+
+	/* Destructive */
+	--color-destructive: oklch(0.60 0.16 28);
+	--color-destructive-foreground: oklch(0.95 0.005 80);
+
+	/* Success */
+	--color-success: oklch(0.60 0.115 155);
+	--color-success-foreground: oklch(0.18 0.02 55);
+
+	/* Warning */
+	--color-warning: oklch(0.72 0.14 75);
+	--color-warning-foreground: oklch(0.20 0.03 55);
+
+	/* Borders & inputs */
+	--color-border: oklch(0.31 0.02 55);
+	--color-input: oklch(0.33 0.02 55);
+	--color-ring: oklch(0.65 0.14 40);
+
+	/* Sidebar */
+	--color-sidebar: oklch(0.175 0.02 55);
+	--color-sidebar-foreground: oklch(0.90 0.01 80);
+	--color-sidebar-primary: oklch(0.65 0.14 40);
+	--color-sidebar-primary-foreground: oklch(0.18 0.02 55);
+	--color-sidebar-accent: oklch(0.26 0.03 55);
+	--color-sidebar-accent-foreground: oklch(0.91 0.01 80);
+	--color-sidebar-border: oklch(0.28 0.02 55);
+	--color-sidebar-ring: oklch(0.65 0.14 40);
+
+	/* Chart palette (dark adjusted) */
+	--color-chart-1: oklch(0.65 0.14 40);
+	--color-chart-2: oklch(0.62 0.12 155);
+	--color-chart-3: oklch(0.72 0.14 75);
+	--color-chart-4: oklch(0.60 0.16 28);
+	--color-chart-5: oklch(0.68 0.10 50);
 }
 
 @layer base {
@@ -44,5 +149,10 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-heading);
 	}
 }

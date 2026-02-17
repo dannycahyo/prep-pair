@@ -2,6 +2,7 @@ import { Book, Calendar, Settings, ShoppingCart, Wallet } from "lucide-react";
 import { NavLink, Outlet, isRouteErrorResponse } from "react-router";
 import { InstallPrompt } from "~/components/shared/install-prompt";
 import { OfflineBanner } from "~/components/shared/offline-banner";
+import { ThemeToggle } from "~/components/shared/theme-toggle";
 import { Toaster } from "~/components/ui/toaster";
 import { requireAuth } from "~/lib/services/auth.service";
 import type { Route } from "./+types/_app";
@@ -47,6 +48,9 @@ export default function AppLayout() {
 						</NavLink>
 					))}
 				</nav>
+				<div className="border-t border-sidebar-border px-3 py-3">
+					<ThemeToggle />
+				</div>
 			</aside>
 
 			{/* Main content */}
@@ -56,6 +60,7 @@ export default function AppLayout() {
 				{/* Mobile header */}
 				<header className="flex md:hidden items-center justify-between border-b border-border px-4 py-3">
 					<h1 className="text-lg font-bold">PrepPair</h1>
+					<ThemeToggle />
 				</header>
 
 				<main className="flex-1 overflow-y-auto p-4 sm:p-6">
