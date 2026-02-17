@@ -1,7 +1,8 @@
 import { Suspense, lazy } from "react";
 import { formatIDR } from "~/lib/utils/currency";
 
-const BAR_COLORS = ["#6366f1", "#8b5cf6", "#a78bfa", "#c4b5fd"] as const;
+/* Warm terracotta / amber / sienna gradient tones for the chart bars */
+const BAR_COLORS = ["#A0522D", "#C97B4B", "#D4956B", "#E0B088"] as const;
 
 const LazyBarChart = lazy(() =>
 	import("recharts").then((mod) => ({
@@ -41,28 +42,28 @@ const LazyBarChart = lazy(() =>
 						<mod.CartesianGrid
 							strokeDasharray="3 3"
 							vertical={false}
-							stroke="hsl(var(--border))"
+							stroke="var(--color-border)"
 						/>
 						<mod.XAxis
 							dataKey="week"
 							axisLine={false}
 							tickLine={false}
-							tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+							tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
 						/>
 						<mod.YAxis
 							axisLine={false}
 							tickLine={false}
-							tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+							tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
 							tickFormatter={(v: number) =>
 								v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)
 							}
 						/>
 						<mod.Tooltip
 							formatter={(value) => [formatIDR(Number(value ?? 0)), "Spent"]}
-							cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
+							cursor={{ fill: "var(--color-muted)", opacity: 0.3 }}
 							contentStyle={{
-								backgroundColor: "hsl(var(--card))",
-								border: "1px solid hsl(var(--border))",
+								backgroundColor: "var(--color-card)",
+								border: "1px solid var(--color-border)",
 								borderRadius: "0.5rem",
 								boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
 							}}
@@ -70,12 +71,12 @@ const LazyBarChart = lazy(() =>
 						/>
 						<mod.ReferenceLine
 							y={budget}
-							stroke="hsl(var(--destructive))"
+							stroke="var(--color-destructive)"
 							strokeDasharray="6 3"
 							strokeWidth={2}
 							label={{
 								value: `Budget: ${formatIDR(budget)}`,
-								fill: "hsl(var(--destructive))",
+								fill: "var(--color-destructive)",
 								fontSize: 11,
 								position: "insideTopRight",
 							}}
@@ -86,7 +87,7 @@ const LazyBarChart = lazy(() =>
 									key={entry.week}
 									fill={
 										entry.total > budget
-											? "hsl(var(--destructive))"
+											? "var(--color-destructive)"
 											: `url(#bar-gradient-${i})`
 									}
 								/>

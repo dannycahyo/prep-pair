@@ -19,7 +19,7 @@ export const links: Route.LinksFunction = () => [
 	},
 	{
 		rel: "stylesheet",
-		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+		href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap",
 	},
 	{ rel: "manifest", href: "/manifest.webmanifest" },
 	{ rel: "icon", href: "/icons/icon-192.png", type: "image/png" },
@@ -35,9 +35,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<meta name="theme-color" content="#1F4E79" />
+				<meta name="theme-color" content="#8B5E3C" />
 				<Meta />
 				<Links />
+				{/* Blocking script to prevent flash of wrong theme (FOUC) */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `(function(){try{var t=localStorage.getItem("preppair-theme");if(t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`,
+					}}
+				/>
 			</head>
 			<body>
 				{children}
